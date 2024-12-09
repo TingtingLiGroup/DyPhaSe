@@ -10,8 +10,8 @@ setup(
     packages=find_namespace_packages(),
     include_package_data=True,
     install_requires=INSTALL_PACKAGES,
-    python_requires='>=3.9',
-    extras_require={
-        "R_integration": ["Ensure R >= 4.4.0 and install required R packages: Mfuzz, dplyr, Biobase"]
-        }
+    python_requires='>=3.9'
+    #extras_require={
+    #    "R_integration": ["Ensure R >= 4.4.0 and install required R packages: Mfuzz, dplyr, Biobase"]
+    #    }
 )

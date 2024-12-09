@@ -1,5 +1,3 @@
-[TOC]
-
 # Introduction to DyPhaSe
 DyPhaSe (Dynamic Phase Separation Predictor) is a modular computational tool designed to model and predict phase separation dynamics based on gene expression variability. It provides a flexible framework for identifying phase-separating proteins and characterizing condensate behavior across diverse cellular states. By integrating protein-protein interaction (PPI) networks, DyPhaSe enables precise prediction of dynamic condensate flows within specific spatiotemporal contexts, shedding light on their functional roles in various biological processes.
 
@@ -17,7 +15,7 @@ conda activate DyPhaSe
 # Step 3: Install the required libraries
 pip install pandas==2.1.1 numpy==1.26.1 seaborn==0.11.0 matplotlib==3.8.1 rpy2==3.5.17 scipy==1.11.3 networkx==3.2.1 louvain==0.8.1
 
-# Step 4: Clone the PhaseMotif repository from GitHub
+# Step 4: Clone the DyPhaSe repository from GitHub
 git clone https://github.com/TingtingLiGroup/DyPhaSe.git
 
 # Step 5: Navigate into the cloned repository directory
