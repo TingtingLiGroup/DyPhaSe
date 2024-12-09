@@ -49,6 +49,7 @@ In Module1, we provide the calculation function `calculate_dyphase_score` and th
 #### Example
 ```python
 import DyPhaSe as dp
+import pandas as pd
 gene_expression = pd.read_csv('../data/gene_expression.csv', index_col=0)
 cell_types = pd.read_csv('../data/cell_types.csv', index_col=0)
 dp.calculate_dyphase_score(gene_expression, 
