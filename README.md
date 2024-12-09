@@ -48,9 +48,10 @@ In Module1, we provide the calculation function `calculate_dyphase_score` and th
 
 #### Example
 ```python
+import DyPhaSe as dp
 gene_expression = pd.read_csv('../data/gene_expression.csv', index_col=0)
 cell_types = pd.read_csv('../data/cell_types.csv', index_col=0)
-calculate_dyphase_score(gene_expression, 
+dp.calculate_dyphase_score(gene_expression, 
                         cell_types, 
                         species='Mouse', output_dir='./DyPhaSe-package/out/')
 ```
@@ -73,7 +74,7 @@ calculate_dyphase_score(gene_expression,
 ```python
 sta_data = pd.read_csv(f'../out/DyPhaSe_scores.csv',index_col=0)
 gene_list = [ 'Pcnt', 'Dynll1','Dcdc2a', 'Tubgcp2', 'Tubb4a', 'Mapk8ip3','Ckap5']
-plot_dyphase_change(sta_data, gene_list)
+dp.plot_dyphase_change(sta_data, gene_list)
 ```
 
 ---
@@ -102,7 +103,7 @@ In Module2, we provide the calculation function `process_trend_clustering_with_r
 
 #### Example
 ```python
-process_trend_with_r(
+dp.process_trend_with_r(
     input_file="../out/DyPhaSe_scores.csv",
     output_dir="../out/",
     cluster_num=12,
@@ -129,7 +130,7 @@ process_trend_with_r(
 ```python
 centers = pd.read_csv('../out/mfuzz-result-centers.csv', index_col=0)
 membership = pd.read_csv('../out/mfuzz-result-membership.csv', index_col=0)
-plot_dyphase_clusters(centers, membership, target_ls=['Cluster1','Cluster9','Cluster10','Cluster11','Cluster12'])
+dp.plot_dyphase_clusters(centers, membership, target_ls=['Cluster1','Cluster9','Cluster10','Cluster11','Cluster12'])
 ```
 ---
 ### `filter_clusters_with_expression`
@@ -168,7 +169,7 @@ cluster_conditions = {
     12: ['CT14', 'CT18', 'CT34']
 }
 
-filtered_results = filter_clusters_with_expression(
+filtered_results = dp.filter_clusters_with_expression(
     gene_expression=gene_expression,
     cell_types=cell_types,
     mfuzz_results=mfuzz_results,
@@ -197,7 +198,7 @@ filtered_results = filter_clusters_with_expression(
 #### Example
 ```python
 df_mfuzz = pd.read_csv('../out/filtered_clusters.csv',index_col=0)
-combined_results = analyze_ppi_community(
+combined_results = dp.analyze_ppi_community(
     df_mfuzz=df_mfuzz,
     species="Mouse",
     clusters=[1,9,10,11,12],
@@ -224,5 +225,5 @@ combined_results = analyze_ppi_community(
 name_ls = ['Cluster11-c1', 'Cluster10-c1']
 protein_community_df = pd.read_csv("../out/target_cluster_ppi_community_node_info.csv")
 output_dir = "../out/"
-generate_cytoscape_files(name_ls, protein_community_df, output_dir)
+dp.generate_cytoscape_files(name_ls, protein_community_df, output_dir)
 ```
