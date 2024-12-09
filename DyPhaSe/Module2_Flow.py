@@ -257,12 +257,14 @@ def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, outpu
     phase_scores_data = pd.read_csv(species_files[species]["phase_scores"])
     saps_dic = dict(zip(phase_scores_data['Protein'], phase_scores_data['rnk_SaPS']))
 
+    ppi_loc = species_files[species]["ppi"]
+
     all_results = []
 
     for cluster_id in clusters:
         protein_list = df_mfuzz[df_mfuzz['protein_cluster'] == cluster_id].index.tolist()
 
-        ppi_nw = pd.read_csv(species_files[species]["ppi"])
+        ppi_nw = pd.read_csv(ppi_loc)
         ppi_nw.columns = ['A', 'B']
         treat_proteins = set(protein_list)
         ppi_nw = ppi_nw[ppi_nw['A'].isin(treat_proteins) & ppi_nw['B'].isin(treat_proteins)]
