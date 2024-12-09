@@ -237,11 +237,13 @@ def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, outpu
     species_files = {
         "Human": {
             "gene_protein": os.path.join(parent_folder, "data/human_uniprot_gene_ensembl.csv"),
-            "phase_scores": os.path.join(parent_folder, "data/human_LLPS_score.csv")
+            "phase_scores": os.path.join(parent_folder, "data/human_LLPS_score.csv"),
+            "ppi": os.path.join(parent_folder, "data/9606.string.ppi.genename.csv")
         },
         "Mouse": {
             "gene_protein": os.path.join(parent_folder, "data/mouse_uniprot_gene_ensembl.csv"),
-            "phase_scores": os.path.join(parent_folder, "data/mouse_LLPS_score.csv")
+            "phase_scores": os.path.join(parent_folder, "data/mouse_LLPS_score.csv"),
+            "ppi": os.path.join(parent_folder, "data/10090.string.ppi.genename.csv")
         }
     }
 

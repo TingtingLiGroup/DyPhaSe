@@ -104,7 +104,7 @@ In Module2, we provide the calculation function `process_trend_clustering_with_r
 
 #### Example
 ```python
-dp.process_trend_with_r(
+dp.process_trend_clustering_with_r(
     input_file="../out/DyPhaSe_scores.csv",
     output_dir="../out/",
     cluster_num=12,
@@ -130,7 +130,9 @@ dp.process_trend_with_r(
 #### Example
 ```python
 centers = pd.read_csv('../out/mfuzz-result-centers.csv', index_col=0)
+centers.index = ['Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6','Cluster7','Cluster8','Cluster9','Cluster10','Cluster11','Cluster12']
 membership = pd.read_csv('../out/mfuzz-result-membership.csv', index_col=0)
+membership.columns = ['Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6','Cluster7','Cluster8','Cluster9','Cluster10','Cluster11','Cluster12']
 dp.plot_dyphase_clusters(centers, membership, target_ls=['Cluster1','Cluster9','Cluster10','Cluster11','Cluster12'])
 ```
 ---
