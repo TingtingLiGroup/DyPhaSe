@@ -13,7 +13,7 @@ conda create --name DyPhaSe python=3.9
 conda activate DyPhaSe
 
 # Step 3: Install the required libraries
-pip install pandas==2.1.1 numpy==1.26.1 seaborn==0.11.0 matplotlib==3.8.1 rpy2==3.5.17 scipy==1.11.3 networkx==3.2.1 louvain==0.8.1
+pip install pandas==2.1.1 numpy==1.26.1 seaborn==0.11.0 matplotlib==3.8.1 rpy2==3.5.17 scipy==1.11.3 networkx==3.2.1 python-louvain==0.16 louvain==0.8.1
 
 # Step 4: Clone the DyPhaSe repository from GitHub
 git clone https://github.com/TingtingLiGroup/DyPhaSe.git
@@ -28,7 +28,7 @@ python setup.py install
 ---
 # Function Documentation
 ## Module1: Predict Dynamic PS Ability of Single Protein
-![alt text](./data/DyphaSe-figure%20(11).png)
+![alt text](./data/Module1.png)
 In Module1, we provide the calculation function `calculate_dyphase_score` and the plotting function `plot_dyphase_change`.
 
 ### `calculate_dyphase_score`
@@ -80,7 +80,7 @@ dp.plot_dyphase_change(sta_data, gene_list)
 
 ---
 ## Module2: Predict Condensate Flow Dynamically
-![alt text](<./data/DyphaSe-figure (10).png>)
+![alt text](./data/Module2.png)
 In Module2, we provide the calculation function `process_trend_clustering_with_r`, `filter_clusters_with_expression`, `analyze_ppi_community`, the plotting function `plot_dyphase_clusters` and the optional function `generate_cytoscape_files`.
 
 ### `process_trend_clustering_with_r`
@@ -192,6 +192,7 @@ filtered_results = dp.filter_clusters_with_expression(
 - **species** (*str*): Species information ("Human" or "Mouse").
 - **clusters** (*list*): List of cluster IDs to analyze.
 - **node_num_cutoff** (*int, optional*): Minimum node count threshold for filtering communities. Default is 10.
+- **clustering_cutoff** (*float, optional*): Threshold for the community clustering coefficient filtering, default is 0.2.
 - **output_path** (*str, optional*): Path to save the results. If None, results are not saved.
 - **seed** (*int, optional*): Random seed for reproducibility. Default is 123.
 
@@ -206,6 +207,7 @@ combined_results = dp.analyze_ppi_community(
     species="Mouse",
     clusters=[1,9,10,11,12],
     node_num_cutoff=10,
+    clustering_cutoff=0.2,
     output_path="../out/",
     seed=123
 )

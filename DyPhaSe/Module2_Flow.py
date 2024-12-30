@@ -215,38 +215,39 @@ def filter_clusters_with_expression(
 
 
 
-def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, output_path=None, seed=123):
+def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, clustering_cutoff=0.2, output_path=None, seed=123):
     """
-    Analyze protein-protein interaction (PPI) networks and perform community detection for specified clusters. 
-    Integrates the results of all clusters into a single file.
-
+    Analyze the Protein-Protein Interaction (PPI) network and perform community detection on specific clusters, 
+    consolidating the results of all clusters into a single file.
+    
     Parameters:
         df_mfuzz (pd.DataFrame): DataFrame containing clustering information.
         species (str): Species information ("Human" or "Mouse").
         clusters (list): List of cluster IDs to analyze.
-        node_num_cutoff (int, optional): Minimum node count threshold for filtering communities. Default is 10.
-        output_path (str, optional): Path to save the results. If None, results are not saved.
-        seed (int, optional): Random seed for reproducibility. Default is 123.
-
+        node_num_cutoff (int, optional): Minimum node count threshold for community filtering, default is 10.
+        clustering_cutoff (float, optional): Threshold for the community clustering coefficient filtering, default is 0.2.
+        output_path (str, optional): File path to save the results. If None, the results will not be saved.
+        seed (int, optional): Random seed to ensure reproducibility, default is 123.
+    
     Returns:
-        pd.DataFrame: Combined results of all analyzed clusters.
+        pd.DataFrame: A DataFrame containing all consolidated cluster results.
     """
+    
     np.random.seed(seed)
     random.seed(seed)
-
+    
     species_files = {
         "Human": {
-            "gene_protein": os.path.join(parent_folder, "data/human_uniprot_gene_ensembl.csv"),
-            "phase_scores": os.path.join(parent_folder, "data/human_LLPS_score.csv"),
-            "ppi": os.path.join(parent_folder, "data/9606.string.ppi.genename.csv")
+            "gene_protein": "../data/human_uniprot_gene_ensembl.csv",
+            "phase_scores": "../data/human_LLPS_score.csv",
+            "ppi": "../data/9606.string.ppi.genename.csv"
         },
         "Mouse": {
-            "gene_protein": os.path.join(parent_folder, "data/mouse_uniprot_gene_ensembl.csv"),
-            "phase_scores": os.path.join(parent_folder, "data/mouse_LLPS_score.csv"),
-            "ppi": os.path.join(parent_folder, "data/10090.string.ppi.genename.csv")
+            "gene_protein": "../data/mouse_uniprot_gene_ensembl.csv",
+            "phase_scores": "../data/mouse_LLPS_score.csv",
+            "ppi": "../data/10090.string.ppi.genename.csv"
         }
     }
-
 
     if species not in species_files:
         raise ValueError("Invalid species name. Choose 'Human' or 'Mouse'.")
@@ -256,46 +257,62 @@ def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, outpu
 
     phase_scores_data = pd.read_csv(species_files[species]["phase_scores"])
     saps_dic = dict(zip(phase_scores_data['Protein'], phase_scores_data['rnk_SaPS']))
-
-    ppi_loc = species_files[species]["ppi"]
-
+    
     all_results = []
 
     for cluster_id in clusters:
+        print(f'Analyzing Cluster {cluster_id}')
+        
         protein_list = df_mfuzz[df_mfuzz['protein_cluster'] == cluster_id].index.tolist()
+        print(f"  Protein count: {len(protein_list)}")
 
-        ppi_nw = pd.read_csv(ppi_loc)
+        ppi_nw = pd.read_csv(species_files[species]["ppi"])
         ppi_nw.columns = ['A', 'B']
         treat_proteins = set(protein_list)
         ppi_nw = ppi_nw[ppi_nw['A'].isin(treat_proteins) & ppi_nw['B'].isin(treat_proteins)]
         ppi_nw[['A', 'B']] = np.sort(ppi_nw[['A', 'B']], axis=1)
         ppi_nw = ppi_nw.drop_duplicates(subset=['A', 'B'])
-
+        
         G = nx.from_pandas_edgelist(ppi_nw, 'A', 'B')
         partition = community_louvain.best_partition(G)
-        community_sizes = {comm_id: sum(1 for node in partition if partition[node] == comm_id) for comm_id in set(partition.values())}
-        final_partition = {node: comm_id for node, comm_id in partition.items() if community_sizes[comm_id] >= node_num_cutoff}
+
+        community_sizes = {comm_id: sum(1 for node in partition if partition[node] == comm_id) 
+                           for comm_id in set(partition.values())}
+        
+        final_partition = {node: comm_id for node, comm_id in partition.items() 
+                           if community_sizes[comm_id] >= node_num_cutoff}
+  
         filtered_G = G.subgraph(final_partition.keys()).copy()
 
         unique_community_ids = sorted(set(final_partition.values()))
         new_id_mapping = {old_id: new_id for new_id, old_id in enumerate(unique_community_ids, 1)}
+        
         renamed_partition = {node: new_id_mapping[comm_id] for node, comm_id in final_partition.items()}
 
         for node, community_id in renamed_partition.items():
             filtered_G.nodes[node]['community'] = community_id
-
+        
         community_clustering_dict = {}
+        
         for community_id, nodes in pd.DataFrame.from_dict(renamed_partition, orient='index').groupby(0):
             community_nodes = nodes.index.tolist()
+            
             if len(community_nodes) > 1:
                 subgraph = filtered_G.subgraph(community_nodes)
                 community_clustering_dict[community_id] = nx.average_clustering(subgraph)
 
-        valid_communities = set(community_clustering_dict.keys())
+        valid_communities = {comm_id for comm_id, clustering in community_clustering_dict.items() 
+                             if clustering >= clustering_cutoff}
+
         community_dict = {
-            new_id: [node for node in renamed_partition if renamed_partition[node] == new_id]
-            for new_id in valid_communities
+            comm_id: [node for node in renamed_partition if renamed_partition[node] == comm_id]
+            for comm_id in valid_communities
         }
+
+        final_id_mapping = {old_id: new_id for new_id, old_id in enumerate(sorted(valid_communities), 1)}
+        
+        renamed_partition = {node: final_id_mapping[comm_id] for node, comm_id in renamed_partition.items() 
+                             if comm_id in valid_communities}
 
         protein_community_pairs = [
             (protein, comm_id)
@@ -307,16 +324,15 @@ def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, outpu
         degree_centrality = nx.degree_centrality(filtered_G)
         betweenness_centrality = nx.betweenness_centrality(filtered_G)
         closeness_centrality = nx.closeness_centrality(filtered_G)
-        eigenvector_centrality = nx.eigenvector_centrality(filtered_G)
 
         protein_community_df['Degree Centrality'] = protein_community_df['Protein'].map(degree_centrality)
         protein_community_df['Betweenness Centrality'] = protein_community_df['Protein'].map(betweenness_centrality)
         protein_community_df['Closeness Centrality'] = protein_community_df['Protein'].map(closeness_centrality)
-        protein_community_df['Eigenvector Centrality'] = protein_community_df['Protein'].map(eigenvector_centrality)
+
         protein_community_df['SaPS'] = protein_community_df['Protein'].apply(lambda x: gp_dic.get(x, np.nan)).map(saps_dic)
         protein_community_df['Community Clustering'] = protein_community_df['Community'].map(community_clustering_dict)
         protein_community_df['Cluster'] = cluster_id
-
+        
         all_results.append(protein_community_df)
 
     all_results_df = pd.concat(all_results, ignore_index=True)
@@ -325,7 +341,7 @@ def analyze_ppi_community(df_mfuzz, species, clusters, node_num_cutoff=10, outpu
     if output_path:
         all_results_df.to_csv(f'{output_path}/target_cluster_ppi_community_node_info.csv', index=False)
         print(f"All results saved to {output_path}")
-
+    
     return all_results_df
 
 
