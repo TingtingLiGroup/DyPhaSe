@@ -12,6 +12,6 @@ setup(
     install_requires=INSTALL_PACKAGES,
     python_requires='>=3.9',
     package_data={
-        'DyPhaSe':['data/mouse_uniprot_gene_ensembl.csv','data/human_uniprot_gene_ensembl.csv','data/mouse_LLPS_score.csv','data/human_LLPS_score.csv','data/10090.string.ppi.genename.csv','data/9606.string.ppi.genename.csv']
+        'DyPhaSe':['data/mouse_uniprot_gene_ensembl.csv','data/human_uniprot_gene_ensembl.csv','data/mouse_LLPS_score.csv','data/human_LLPS_score.csv']
     }
 )

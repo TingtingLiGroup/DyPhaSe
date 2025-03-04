@@ -1,6 +1,4 @@
 include data/human_uniprot_gene_ensembl.csv
 include data/human_LLPS_score.csv
-include data/9606.string.ppi.genename.csv
 include data/mouse_uniprot_gene_ensembl.csv
 include data/mouse_LLPS_score.csv
-include data/10090.string.ppi.genename.csv
