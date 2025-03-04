@@ -11,9 +11,6 @@ setup(
     include_package_data=True,
     install_requires=INSTALL_PACKAGES,
     python_requires='>=3.9',
-    #extras_require={
-    #    "R_integration": ["Ensure R >= 4.4.0 and install required R packages: Mfuzz, dplyr, Biobase"]
-    #    }
     package_data={
         'DyPhaSe':['data/mouse_uniprot_gene_ensembl.csv','data/human_uniprot_gene_ensembl.csv','data/mouse_LLPS_score.csv','data/human_LLPS_score.csv','data/10090.string.ppi.genename.csv','data/9606.string.ppi.genename.csv']
     }

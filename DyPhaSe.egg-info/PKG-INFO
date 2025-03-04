@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: DyPhaSe
+Version: 0.1
+Requires-Python: >=3.9
+Requires-Dist: pandas==2.1.1
+Requires-Dist: numpy==1.26.1
+Requires-Dist: seaborn==0.11.0
+Requires-Dist: matplotlib==3.8.1
+Requires-Dist: rpy2==3.5.17
+Requires-Dist: scipy==1.11.3
+Requires-Dist: networkx==3.2.1
+Requires-Dist: python-louvain==0.16
+Requires-Dist: louvain==0.8.1
