@@ -22,7 +22,7 @@ git clone https://github.com/TingtingLiGroup/DyPhaSe.git
 cd DyPhaSe
 
 # Step 6: Install the package using setup.py
-python setup.py install
+pip install .
 ```
 
 ---
