@@ -1,5 +1,5 @@
 # Introduction to DyPhaSe
-DyPhaSe (Dynamic Phase Separation Predictor) is a computational framework designed to predict spatiotemporal phase separation (PS) events using single-cell RNA sequencing data. By integrating gene expression variability with intrinsic phase separation potential, DyPhaSe provides a robust and systematic approach for identifying dynamic PS events in various biological contexts.
+DyPhaSe (Dynamic Phase Separation Predictor) is a computational framework designed to predict context-specific phase separation (PS) dynamics using single-cell RNA sequencing data. By integrating gene expression variability with intrinsic PS potential, DyPhaSe provides a robust and systematic approach for identifying dynamic PS events in various biological contexts.
 
 This repository contains the source code for DyPhaSe, enabling researchers to predict dynamic PS events in biological contexts of interest.
 
@@ -33,7 +33,7 @@ Here, we provide the calculation function `calculate_dyphase_score` and the plot
 
 ### `calculate_dyphase_score`
 #### Description
-  The `calculate_dyphase_score` function calculates the predicted DyPhaSe score for each gene in different cell types based on the user-submitted single-cell gene expression matrix and cell type annotation files. A higher DyPhaSe score corresponds to an increased likelihood of phase separation under specific cellular conditions.
+  The `calculate_dyphase_score` function calculates the predicted DyPhaSe score for each gene in different cell populations based on the user-submitted gene expression matrix and cell type annotation files. A higher DyPhaSe score corresponds to an increased likelihood of PS under specific cellular conditions.
 
 #### Parameters
 + **gene_expression** (*pd.DataFrame*): Gene expression matrix, where rows are cell names and columns are gene names. Make share the matrix has been normalized, such as log(TPM+1), log(CPM+1), etc.
@@ -54,7 +54,7 @@ gene_expression = pd.read_csv('../data/gene_expression.csv', index_col=0)
 cell_types = pd.read_csv('../data/cell_types.csv', index_col=0)
 dp.calculate_dyphase_score(gene_expression, 
                         cell_types, 
-                        species='Mouse', output_dir='./DyPhaSe-package/out/')
+                        species='Mouse', output_dir='../out/')
 ```
 ---
 ### `plot_dyphase_change`
